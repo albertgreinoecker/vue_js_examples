@@ -1,0 +1,46 @@
+<script src="https://unpkg.com/vue@3"></script>
+<html>
+<head>
+
+</head>
+<body>
+
+</body>
+	<div id="app">
+		<input type="text" v-model="user_name" placeholder="Name">
+
+		Abteilungen:
+		<select v-model="department">
+    		<option v-for="d in departments" :value="d">{{d}}</option>
+		</select>
+		<button @click="add"> neu</button>
+		 <fieldset>
+			<legend>Alle Benutzer:</legend>
+			 <span v-for="u in users" >
+				 <input type="checkbox" name="u" value="u">{{u}}</input><br>
+			 </span>
+    	</fieldset>
+
+	</div>
+</html>
+<script>
+const { createApp } = Vue
+
+createApp({
+	data() {
+		return { //Deklaration der Variablen nicht vergessen!!
+			departments : ['IT', 'SALES', 'R&D'],
+			users : [],
+			user_name : '',
+			department : '',
+		}
+	},
+	methods:
+			{
+				add()
+				{
+					this.users.push(`${this.user_name} (${this.department})`);
+				}
+			}
+}).mount('#app')
+</script>

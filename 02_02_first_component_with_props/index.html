@@ -1,0 +1,20 @@
+<script src="https://unpkg.com/vue@3"></script>
+
+<script type="module">
+const { createApp } = Vue
+import FirstNestedComp from './FirstNestedComp.js'
+
+createApp({
+  data()
+  {
+    return {msg2 : "second"}
+  },
+  components: {
+    FirstNestedComp
+  }
+}).mount('#app')
+</script>
+
+<div id="app">
+  <first-nested-comp msg1="first" :msg2="msg2" :cnt="12"></first-nested-comp>
+</div>

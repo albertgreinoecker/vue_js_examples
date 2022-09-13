@@ -1,0 +1,28 @@
+<script src="https://unpkg.com/vue@3"></script>
+
+<!-- Hier befindet sich die Darstellung der Anwendung
+Über die ID wird unten die Verknüpfung mit mount hergestellt-->
+<div id="app">
+	<!-- wird von der unteren Komponente übernommen -->
+	Bild 1: <img v-bind:src="img1" v-bind:width="img_width"/>
+	<br/>
+	Bild 2: <img :src="img2" :width="img_width"/> <!-- Kurzschreibweise -->
+</div>
+
+<script>
+const { createApp } = Vue
+
+/*
+* Die Einstiegsstelle für die Anwendung
+* Es wird eine Komponente mit vordefienierter Struktur übergeben
+* Alles was unter data() zurückgegeben wird ist reaktiv */
+createApp({
+	data() {
+		return {
+			img1: 'https://htlinn.ac.at/fileadmin/templates/img/htl-anichstrasse-logo.svg',
+			img2: 'https://htlinn.ac.at/fileadmin/_processed_/a/b/csm_DieFotografen_060_f74069f2c1.jpg',
+			img_width : 150
+		}
+	}
+}).mount('#app')
+</script>

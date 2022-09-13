@@ -1,0 +1,25 @@
+<script src="https://unpkg.com/vue@3"></script>
+<html>
+<head>
+
+</head>
+<body>
+
+</body>
+	<div id="app">
+		<input type="checkbox" id="checkbox" v-model="checked"> <br/>
+		<span v-if="checked">Checkbox selected</span>
+		<span v-else>Checkbox NOT selected</span> <br/> <!-- else muss direkt darunter stehen -->
+	</div>
+</html>
+<script>
+const { createApp } = Vue
+
+createApp({
+	data() {
+		return { //Deklaration der Variablen nicht vergessen!!
+			checked : false,
+		}
+	}
+}).mount('#app')
+</script>

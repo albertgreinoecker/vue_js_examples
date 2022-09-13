@@ -1,0 +1,26 @@
+<script src="https://unpkg.com/vue@3"></script>
+
+<!-- Hier befindet sich die Darstellung der Anwendung
+Über die ID wird unten die Verknüpfung mit mount hergestellt-->
+<div id="app">
+	<!-- wird von der unteren Komponente übernommen -->
+	<h1>{{ message }}</h1>
+	<!-- hier ist jeder Javascript-Ausdruck möglich -->
+	{{ message.split(' ').reverse()}}
+</div>
+
+<script>
+const { createApp } = Vue
+
+/*
+* Die Einstiegsstelle für die Anwendung
+* Es wird eine Komponente mit vordefienierter Struktur übergeben
+* Alles was unter data() zurückgegeben wird ist reaktiv */
+createApp({
+	data() {
+		return {
+			message: 'The first Vue Application without build tools!',
+		}
+	}
+}).mount('#app')
+</script>

@@ -1,0 +1,23 @@
+<script src="https://unpkg.com/vue@3"></script>
+
+<script type="module">
+const { createApp } = Vue
+import FirstNestedComp from './FirstNestedComp.js'
+
+createApp({
+  components: {
+    FirstNestedComp
+  },
+  methods:
+          {
+            handleEvent(msg='')
+            {
+              console.log("Parent called! with message:" + msg);
+            }
+          }
+}).mount('#app')
+</script>
+
+<div id="app">
+  <first-nested-comp @any-event="handleEvent"></first-nested-comp>
+</div>

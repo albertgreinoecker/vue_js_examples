@@ -1,0 +1,24 @@
+<script src="https://unpkg.com/vue@3"></script>
+<div id="app">
+	<input @input="onInput"/> Eingabetext: {{text1}} <br/>
+	<input v-model="text2"/> Eingabetext: {{text2}} <br/>
+</div>
+
+<script>
+const { createApp } = Vue
+
+createApp({
+	data() {
+		return { //Deklaration der Variablen nicht vergessen!!
+			text1: '',
+			text2 : ''
+		}
+	},
+	methods:
+			{
+				onInput(e) {
+					this.text1 = e.target.value
+				}
+			}
+}).mount('#app')
+</script>

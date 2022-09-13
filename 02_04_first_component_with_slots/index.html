@@ -1,0 +1,18 @@
+<script src="https://unpkg.com/vue@3"></script>
+
+<script type="module">
+const { createApp } = Vue
+import FirstNestedComp from './FirstNestedComp.js'
+
+createApp({
+  components: {
+    FirstNestedComp
+  },
+}).mount('#app')
+</script>
+
+<div id="app">
+  <first-nested-comp >
+    This is the <i>slot</i> content to be displayed <b>in the nested comp</b>
+  </first-nested-comp>
+</div>
