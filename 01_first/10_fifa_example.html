@@ -1,0 +1,85 @@
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/vue-select@latest"></script>
+<link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
+
+<html>
+<head>
+	<meta charset="utf-8">
+</head>
+<body>
+
+</body>
+	<div id="app">
+		Dieses Team ist ausgewählt: {{curr_team}}<br/>
+		<select v-model="curr_team" @change="filter_players">
+			<option v-for="team in teams">{{team.Name}}</option>
+		</select>
+		<br/>
+		Dieser Spieler ist ausgewählt: {{curr_player}}<br/>
+		<select v-model="curr_player" @change="filter_player" >
+			<option v-for="player in team_players">{{player.Name}}</option>
+		</select>
+		<br/>
+		Infos zum Spieler: <img :src="curr_player_obj.PhotoUrl" ></img>
+		<ul>
+			<li>ID: {{curr_player_obj.ID}}</li>
+			<li>Url: {{curr_player_obj.PhotoUrl}}</li>
+		</ul>
+		{{curr_player_obj.ID}}
+
+		<br/>
+		<select v-model="team1">
+			<option v-for="player in team1_players">{{player}}</option>
+		</select>
+		<button @click="add(1)" >add 1</button>
+		<button @click="remove(1)" >remove 1</button>
+		<br/>
+		<select v-model="team1">
+			<option v-for="player in team2_players">{{player}}</option>
+		</select>
+		<button @click="add(2)">add 2</button>
+		<button @click="remove(2)">remove 2</button>
+	</div>
+</html>
+     <script src="../data/teams_fifa22.js"></script>
+     <script src="../data/players_fifa22.js"></script>
+<script>
+	const { createApp } = Vue
+
+createApp({
+	data() {
+		return {
+			teams : teams,
+			players : players,
+			curr_team: '',
+			curr_player: '',
+			curr_player_obj : {},
+			team_players : [],
+			team1_players : [],
+			team2_players : [],
+			team1 : '',team2 : '',
+		}
+	},
+	methods:
+			{
+				filter_players()
+				{
+					this.team_players = this.players.filter(p => p.Club === this.curr_team);
+					console.log(JSON.stringify(this.team_players));
+				},
+				filter_player()
+				{
+					console.log(this.curr_player);
+					this.curr_player_obj =  this.players.find(p => p.Name === this.curr_player);
+					console.log("CURR_PLAYER:" +  JSON.stringify(this.curr_player_obj));
+				}, add(which)
+				{
+					this["team" + which + "_players"].push((this.curr_player));
+				}, remove(which)
+				{
+					this["team" + which + "_players"] = this["team" + which + "_players"].filter((v) => (v != this["team" + which]));
+				}
+
+			}
+}).mount('#app')
+</script>
