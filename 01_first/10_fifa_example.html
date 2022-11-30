@@ -25,8 +25,6 @@
 			<li>ID: {{curr_player_obj.ID}}</li>
 			<li>Url: {{curr_player_obj.PhotoUrl}}</li>
 		</ul>
-		{{curr_player_obj.ID}}
-
 		<br/>
 		<select v-model="team1">
 			<option v-for="player in team1_players">{{player}}</option>
@@ -34,7 +32,7 @@
 		<button @click="add(1)" >add 1</button>
 		<button @click="remove(1)" >remove 1</button>
 		<br/>
-		<select v-model="team1">
+		<select v-model="team2">
 			<option v-for="player in team2_players">{{player}}</option>
 		</select>
 		<button @click="add(2)">add 2</button>
@@ -77,7 +75,8 @@ createApp({
 					this["team" + which + "_players"].push((this.curr_player));
 				}, remove(which)
 				{
-					this["team" + which + "_players"] = this["team" + which + "_players"].filter((v) => (v != this["team" + which]));
+					this["team" + which + "_players"] =
+							this["team" + which + "_players"].filter((v) => (v != this["team" + which]));
 				}
 
 			}

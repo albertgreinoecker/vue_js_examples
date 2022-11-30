@@ -1,6 +1,4 @@
 export default {
       template:
-		  '<button><slot/></button>'
-
-
+		  '<button><slot></slot></button>'
 }

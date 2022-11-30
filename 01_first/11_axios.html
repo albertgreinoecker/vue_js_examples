@@ -1,0 +1,72 @@
+<html>
+<head>
+	<script src="https://unpkg.com/vue@3"></script>
+	<script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+	<meta charset="utf-8">
+</head>
+<body>
+
+</body>
+	<div id="app">
+		<input v-model="query"  v-on:keyup.enter="fetchData">
+		<input v-model="limit" type="number" style="width: 50px">
+		<button @click="fetchData">Hole Daten</button>
+		<ul>
+			<li v-for="r in results" @click="showPage(r.pageid)">{{r.title}} ({{r.pageid}})<br/><span style="font-size: small" v-html="r.snippet"></span></li>
+		</ul>
+		<a :href="url" target="_blank">{{url}} <small> (letzter Aufruf{{touched}})</small></a>
+	</div>
+
+<script>
+	const { createApp } = Vue
+
+createApp({
+	data() {
+		return {
+			query : "Innsbruck",
+			results : [{'title' : 'Hier kommen die Suchergebnisse hin'}],
+			limit: 10,
+			url: 'Hier kommt die aktuelle Adresse hin',
+			touched: ''
+		}
+	},
+	methods:
+			{
+				async fetchData()
+				{
+					const response = await axios.get("https://de.wikipedia.org/w/api.php",
+							{
+								params: {
+									action : "query",
+									list : "search",
+									srsearch :  this.query,
+									format :"json",
+									origin :"*",
+									limit : this.limit
+								}
+							});
+
+
+					this.results =  response.data.query.search;
+					console.log(this.results)
+				}, async showPage(id)
+				{
+					console.log(id);
+					const response = await axios.get("https://de.wikipedia.org/w/api.php", //https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids=55857&inprop=url&format=json
+							{
+								params: {
+									action : "query",
+									prop : "info",
+									pageids :  id,
+									inprop :"url",
+									format :"json",
+									origin :"*",
+								}
+							});
+					this.url = response.data.query.pages[id].fullurl;
+					this.touched = response.data.query.pages[id].touched;
+				}
+			}
+}).mount('#app')
+</script>
+</html>
