@@ -68,7 +68,7 @@ class AthleteEvents(Base):
 @app.route('/event_by_noc/<string:noc>')
 def event_by_noc(noc):
     infos = AthleteEvents.query.filter(AthleteEvents.noc == noc).all()
-    return  jsonify(infos)
+    return jsonify(infos)
 
 @app.route('/regions')
 def regions():
@@ -95,7 +95,7 @@ def medals(noc):
 
 @app.route('/medals2/<string:noc>')
 def medals2(noc):
-    m =  medals_by_noc(noc)
+    m = medals_by_noc(noc)
     key = []
     val = []
     for i in m:
@@ -112,6 +112,27 @@ def events_group_by_sex():
     res = [(row[0], row[1], row[2]) for row in res]
     print(res)
     return j.dumps(res)
+
+@app.route('/count_by_sex2')
+def events_group_by_sex2():
+    res = engine.execute("SELECT sex, medal, count(*) FROM athlete_events WHERE medal != 'NA' GROUP BY sex, medal")
+    keyM = []
+    valM = []
+    keyF = []
+    valF = []
+    for r in res:
+        if r[0] == 'M':
+            keyM.append(r[1])
+            valM.append(r[2])
+        else:
+            keyF.append(r[1])
+            valF.append(r[2])
+    res = [(row[0], row[1], row[2]) for row in res]
+    res = [{'x': keyM, 'y': valM, 'type': 'bar'},{'x': keyF, 'y': valF, 'type': 'bar'}]
+    return j.dumps(res)
+
+
+
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     print("Shutdown Session")
