@@ -1,11 +1,9 @@
-
-
 <template>
   <div class="greetings">
       <table>
           <tr>
-            <td>  <button @click="$emit('blogclick',entry.id)">{{entry.id}}</button></td>
-            <td>{{entry.text }}</td>
+            <td><img alt="HTL logo" class="logo" src="../assets/htl-anichstrasse-logo.svg" width="125" height="125" /></td>
+            <td vertical-align="center">{{ msg }}</td>
       </tr>
       </table>
   </div>
@@ -15,17 +13,16 @@
 
 </style>
 
+
 <script>
 export default {
   props : {
-    entry:
+    msg:
         {
-          type : Object,
-          default: {id: 1, text: 'default'}
+          type : String,
+          default: "the default string"
         }
   },
-  emits: ['blogclick'],
-
   data() {
     return {
       count: 0

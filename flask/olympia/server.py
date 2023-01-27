@@ -43,7 +43,7 @@ class AthleteEvents(Base):
     name: str
     sex: str
     age: int
-    height:int
+    height: int
     weight: int
     noc: NocRegions
 
