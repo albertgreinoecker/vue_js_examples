@@ -14,7 +14,7 @@ metadata = Base.metadata
 #engine = create_engine('sqlite:///catalog.db') #sqlite
 engine = create_engine('mysql+pymysql://root:root@localhost/catalog') #mysql
 
-db_session = scoped_session(sessionmaker(autocommit=True, autoflush=True, bind=engine))
+db_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
 Base.query = db_session.query_property() #Dadurch hat jedes Base - Objekt (also auch ein GeoInfo) ein Attribut query für Abfragen
 app = Flask(__name__) #Die Flask-Anwendung
 cors = CORS(app) # Ohne dieser Anweisung darf man von Webseiten aus nicht zugrfeifen
@@ -41,6 +41,7 @@ class CatalogREST(Resource):
         info = Catalog(id=data['id'], description=data['description'], thumb=data['thumb'])
         db_session.add(info)
         db_session.flush()
+        db_session.commit()
         return jsonify(info)
     def delete(self,id):
         info = Catalog.query.get(id)
@@ -48,6 +49,7 @@ class CatalogREST(Resource):
             return jsonify({'message': 'object with id %d does not exist' % id})
         db_session.delete(info)
         db_session.flush()
+        db_session.commit()
         return jsonify({'message': '%d deleted' % id})
     def patch(self, id):
         print(request.json)
@@ -58,6 +60,7 @@ class CatalogREST(Resource):
         info.description = description
         db_session.add(info)
         db_session.flush()
+        db_session.commit()
         return jsonify({'message': 'object with id %d modified' % id})
 
     @app.route('/cat-search/<q>')
