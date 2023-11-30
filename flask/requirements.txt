@@ -1,1 +1,6 @@
-Flask-CORS
+# necessary requirements
+Flask
+Flask-Cors
+Flask-RESTful
+PyMySQL
+SQLAlchemy
