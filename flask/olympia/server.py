@@ -15,7 +15,7 @@ metadata = Base.metadata
 
 engine = create_engine('sqlite:///olympics.db', echo=True)
 
-db_session = scoped_session(sessionmaker(autocommit=True, autoflush=True, bind=engine))
+db_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
 Base.query = db_session.query_property() #Dadurch hat jedes Base - Objekt (also auch ein GeoInfo) ein Attribut query für Abfragen
 app = Flask(__name__) #Die Flask-Anwendung
 cors = CORS(app) # Ohne dieser Anweisung
@@ -82,6 +82,13 @@ def events():
 
 def medals_by_noc(noc):
     m = db_session.query(AthleteEvents.medal, func.count(AthleteEvents.medal)).filter(and_(AthleteEvents.medal != 'NA',AthleteEvents.noc == noc)).group_by(AthleteEvents.medal).all()
+
+    a = []
+    for i in m:
+        a.append([i[0], i[1]])
+
+
+
     m = pd.DataFrame.from_records(m, columns=['medal', 'cnt'])
     print(m)
     m['medal'] = pd.Categorical(m['medal'], ["Gold", "Silver", "Bronze"])
@@ -137,6 +144,7 @@ def events_group_by_sex2():
 def shutdown_session(exception=None):
     print("Shutdown Session")
     db_session.remove()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
