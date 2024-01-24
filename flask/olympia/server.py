@@ -88,7 +88,6 @@ def medals_by_noc(noc):
         a.append([i[0], i[1]])
 
 
-
     m = pd.DataFrame.from_records(m, columns=['medal', 'cnt'])
     print(m)
     m['medal'] = pd.Categorical(m['medal'], ["Gold", "Silver", "Bronze"])

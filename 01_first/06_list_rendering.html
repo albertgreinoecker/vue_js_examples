@@ -17,7 +17,7 @@
 		 <fieldset>
 			<legend>Alle Benutzer:</legend>
 			 <span v-for="u in users" >
-				 <input type="checkbox" name="u" value="u">{{u}}</input><br>
+				 <input type="checkbox" name="{{u.user_name}}" value="u">{{u.user_name}} ({{u.department}})</input><br>
 			 </span>
     	</fieldset>
 
@@ -39,7 +39,7 @@ createApp({
 			{
 				add()
 				{
-					this.users.push(`${this.user_name} (${this.department})`);
+					this.users.push({'user_name' : this.user_name, 'department' : this.department});
 				}
 			}
 }).mount('#app')

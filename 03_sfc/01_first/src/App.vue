@@ -7,7 +7,7 @@
   <button @click="count++">Anzahl der Clicks: {{ count }}</button>
 </template>
 
-<style scoped>
+<style>
 button {
   font-weight: bold;
   background: aquamarine;
