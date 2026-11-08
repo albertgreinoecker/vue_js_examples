@@ -1,8 +1,6 @@
 from flask import Flask, request,jsonify
-from sqlalchemy import Column, Integer, Text, Float, DateTime, create_engine, ForeignKey, func, and_
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql.expression import func
+from sqlalchemy import Column, Integer, Text, Float, DateTime, create_engine, ForeignKey, func, and_, text
+from sqlalchemy.orm import scoped_session, sessionmaker, declarative_base
 from flask_restful import Resource, Api
 from dataclasses import dataclass
 #import json
@@ -16,10 +14,9 @@ metadata = Base.metadata
 engine = create_engine('sqlite:///olympics.db', echo=True)
 
 db_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
-Base.query = db_session.query_property() #Dadurch hat jedes Base - Objekt (also auch ein GeoInfo) ein Attribut query für Abfragen
+Base.query = db_session.query_property() #Dadurch hat jedes Base - Objekt (also auch ein AthleteEvents) ein Attribut query für Abfragen
 app = Flask(__name__) #Die Flask-Anwendung
-cors = CORS(app) # Ohne dieser Anweisung
-# darf man von Webseiten aus nicht zugrfeifen
+cors = CORS(app) # Ohne diese Anweisung darf man von Webseiten aus nicht zugreifen
 api = Api(app) #Die Flask API
 
 
@@ -35,7 +32,7 @@ class NocRegions(Base):
     notes = Column('notes', Text)
 
 
-@dataclass #Diese ermoeglicht das Schreiben als JSON mit jsonify
+@dataclass #Dieser Decorator ermöglicht das Schreiben als JSON mit jsonify
 class AthleteEvents(Base):
     __tablename__ = 'athlete_events'
 
@@ -45,7 +42,7 @@ class AthleteEvents(Base):
     age: int
     height: int
     weight: int
-    noc: NocRegions
+    noc: str
 
     id = Column('ID', Integer, primary_key=True)
     name = Column('Name', Text)
@@ -77,16 +74,11 @@ def regions():
 
 @app.route('/events')
 def events():
-    infos = db_session.query(AthleteEvents.event).distinct(AthleteEvents.event).order_by(AthleteEvents.event).all()
-    return  j.dumps(infos)
+    infos = db_session.query(AthleteEvents.event).distinct().order_by(AthleteEvents.event).all()
+    return j.dumps([list(row) for row in infos])
 
 def medals_by_noc(noc):
     m = db_session.query(AthleteEvents.medal, func.count(AthleteEvents.medal)).filter(and_(AthleteEvents.medal != 'NA',AthleteEvents.noc == noc)).group_by(AthleteEvents.medal).all()
-
-    a = []
-    for i in m:
-        a.append([i[0], i[1]])
-
 
     m = pd.DataFrame.from_records(m, columns=['medal', 'cnt'])
     print(m)
@@ -114,14 +106,16 @@ def medals2(noc):
 
 @app.route('/count_by_sex')
 def events_group_by_sex():
-    res = engine.execute("SELECT sex, medal, count(*) FROM athlete_events WHERE medal != 'NA' GROUP BY sex, medal")
-    res = [(row[0], row[1], row[2]) for row in res]
+    with engine.connect() as conn:  # engine.execute() was removed in SQLAlchemy 2.0
+        res = conn.execute(text("SELECT sex, medal, count(*) FROM athlete_events WHERE medal != 'NA' GROUP BY sex, medal"))
+        res = [(row[0], row[1], row[2]) for row in res]
     print(res)
     return j.dumps(res)
 
 @app.route('/count_by_sex2')
 def events_group_by_sex2():
-    res = engine.execute("SELECT sex, medal, count(*) FROM athlete_events WHERE medal != 'NA' GROUP BY sex, medal")
+    with engine.connect() as conn:
+        res = conn.execute(text("SELECT sex, medal, count(*) FROM athlete_events WHERE medal != 'NA' GROUP BY sex, medal")).all()
     keyM = []
     valM = []
     keyF = []
@@ -133,15 +127,14 @@ def events_group_by_sex2():
         else:
             keyF.append(r[1])
             valF.append(r[2])
-    res = [(row[0], row[1], row[2]) for row in res]
     res = [{'x': keyM, 'y': valM, 'type': 'bar'},{'x': keyF, 'y': valF, 'type': 'bar'}]
     return j.dumps(res)
 
 
 
-@app.teardown_appcontext
+@app.teardown_appcontext  # wird nach jedem Request aufgerufen, nicht beim Beenden des Servers
 def shutdown_session(exception=None):
-    print("Shutdown Session")
+    print("Remove DB session")
     db_session.remove()
 
 

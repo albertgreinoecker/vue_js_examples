@@ -5,7 +5,7 @@
 <div id="app">
 	<!-- wird von der unteren Komponente übernommen -->
 	<h1>{{ message }}</h1>
-	<!-- hier ist jeder Javascript-Ausdruck möglich -->
+	<!-- hier ist jeder JavaScript-Ausdruck möglich -->
 	{{ message.split(' ').reverse()}}
 </div>
 
@@ -14,8 +14,8 @@ const { createApp } = Vue
 
 /*
 * Die Einstiegsstelle für die Anwendung
-* Es wird eine Komponente mit vordefienierter Struktur übergeben
-* Alles was unter data() zurückgegeben wird ist reaktiv */
+* Es wird eine Komponente mit vordefinierter Struktur übergeben
+* Alles, was unter data() zurückgegeben wird, ist reaktiv */
 createApp({
 	data() {
 		return {

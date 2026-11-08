@@ -1,4 +1,4 @@
-# 02_components
+# 03_plotly
 
 This template should help get you started developing with Vue 3 in Vite.
 

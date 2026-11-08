@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from sqlalchemy import Column, Integer, Text, Float, DateTime, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, declarative_base
 from flask_restful import Resource, Api, reqparse, abort
 from flask_cors import CORS, cross_origin
 from dataclasses import dataclass
@@ -11,18 +10,15 @@ engine = create_engine('sqlite:///users.db')  # sqlite
 Base = declarative_base()  # Basisklasse aller in SQLAlchemy verwendeten Klassen
 metadata = Base.metadata
 
-#Session = sessionmaker(bind=engine)
-#session = Session()
-
 db_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
-Base.query = db_session.query_property()  # Dadurch hat jedes Base - Objekt (also auch ein GeoInfo) ein Attribut query für Abfragen
+Base.query = db_session.query_property()  # Dadurch hat jedes Base - Objekt (also auch ein User) ein Attribut query für Abfragen
 
 app = Flask(__name__) #Die Flask Anwendung
-cors = CORS(app, origins=["http://localhost:5173"]) #Cors,ohne den origins Verweis darf ich nicht von der Website aus zugreifen
+cors = CORS(app, origins=["http://localhost:5173"]) # CORS: nur von dieser Origin (Vite-Dev-Server) aus darf zugegriffen werden
 api = Api(app) #Die API
 
 
-@dataclass  # Diese ermoeglicht das Schreiben als JSON mit jsonify
+@dataclass  # Dieser Decorator ermöglicht das Schreiben als JSON mit jsonify
 class User(Base):
     __tablename__ = 'users'
     id: int
@@ -40,7 +36,7 @@ class User(Base):
 user_parser = reqparse.RequestParser()
 user_parser.add_argument('name', type=str, required=True)
 user_parser.add_argument('rfid', type=str, required=True)
-user_parser.add_argument('motorwert', type=str, required=True)
+user_parser.add_argument('motorwert', type=int, required=True)
 
 
 # für mehrere User
@@ -66,9 +62,8 @@ class UserService(Resource):
         data = request.get_json(force=True)['info']
         if data:
             info = User(name=data['name'], rfid=data['rfid'], motorwert=data['motorwert'])
-            #linfo = session.merge(info)
             db_session.add(info)
-            #session.commit()
+            db_session.commit()
             return jsonify(info)
         else:
             abort(404, message=f"Post request does not work")
@@ -82,24 +77,22 @@ class UserService(Resource):
             data.name = name
             data.rfid = rfid
             data.motorwert = motorwert
-            ldata = session.merge(data)
-            session.add(ldata)
-            session.commit()
+            db_session.commit()
+            return jsonify(data)
         else:
             abort(404, message=f"User with id {id} not found")
 
     def delete(self, id):
         user = User.query.get(id)
         if user:
-            luser = session.merge(user)
-            session.delete(luser)
-            session.commit()
+            db_session.delete(user)
+            db_session.commit()
             return jsonify({'message': f"User with id {id} deleted"})
         else:
             abort(404, message=f"User with id {id} not found")
 
 
-# nur ein user mit der richtigen rfid (muigg)
+# nur User mit der richtigen RFID
 class RFID(Resource):
     def get(self, rfid):
         user = User.query.filter(User.rfid == rfid).all()
@@ -109,7 +102,7 @@ class RFID(Resource):
             abort(404, message=f"User with rfid {rfid} not found")
 
 
-# @app.route("/registration", method="POST") # damit wird angegeben unter welchen web-addressen die darunterliegende methode aufgerufen wird (ist ein decorator)
+# @app.route("/registration", method="POST") # damit wird angegeben, unter welchen Web-Adressen die darunterliegende Methode aufgerufen wird (ist ein Decorator)
 # def registration():
 #     return None
 #
@@ -126,12 +119,12 @@ api.add_resource(RFID, '/rfid/<string:rfid>')
 
 
 
-@app.teardown_appcontext  # schließt datenbank connection, wenn server geschlossen wird
+@app.teardown_appcontext  # gibt die DB-Session nach jedem Request frei (nicht erst beim Beenden des Servers)
 def shutdown_session(exception=None):
-    print("Shutdown Session")
+    print("Remove DB session")
     db_session.remove()
 
 
 if __name__ == '__main__':
-    Base().metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     app.run(host='0.0.0.0', port=8080, debug=True)

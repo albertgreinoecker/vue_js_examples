@@ -5,20 +5,18 @@
 	<meta charset="utf-8">
 </head>
 <body>
-
-</body>
 	<div id="app">
 		<input v-model="query"  v-on:keyup.enter="fetchData">
-		<input v-model="limit" type="number" style="width: 50px">
+		<input v-model.number="limit" type="number" style="width: 50px">
 		<button @click="fetchData">Hole Daten</button>
 		<ul>
 			<li v-for="r in results" @click="showPage(r.pageid)">{{r.title}} ({{r.pageid}})<br/><span style="font-size: small" v-html="r.snippet"></span></li>
 		</ul>
-		<a :href="url" target="_blank">{{url}} <small> (letzter Aufruf{{touched}})</small></a>
+		<a :href="url" target="_blank">{{url}} <small> (zuletzt geändert: {{touched}})</small></a>
 	</div>
 
 <script>
-	const { createApp } = Vue
+const { createApp } = Vue
 
 createApp({
 	data() {
@@ -42,7 +40,7 @@ createApp({
 									srsearch :  this.query,
 									format :"json",
 									origin :"*",
-									limit : this.limit
+									srlimit : this.limit //Anzahl der Treffer (Parameter heißt bei list=search srlimit)
 								}
 							});
 
@@ -51,6 +49,7 @@ createApp({
 					console.log(this.results)
 				}, async showPage(id)
 				{
+					if (!id) return; //der Platzhalter-Eintrag hat keine pageid
 					console.log(id);
 					const response = await axios.get("https://de.wikipedia.org/w/api.php", //https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids=55857&inprop=url&format=json
 							{
@@ -64,9 +63,10 @@ createApp({
 								}
 							});
 					this.url = response.data.query.pages[id].fullurl;
-					this.touched = response.data.query.pages[id].touched;
+					this.touched = response.data.query.pages[id].touched; //Zeitpunkt der letzten Änderung der Seite
 				}
 			}
 }).mount('#app')
 </script>
+</body>
 </html>

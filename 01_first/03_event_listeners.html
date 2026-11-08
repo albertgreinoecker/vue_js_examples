@@ -21,7 +21,7 @@ createApp({
 			{
 				increment(cnt=1) //mit 1 als default-Wert
 				{
-					this.count += cnt ; //jede Variable muss mit this angesprochen werden, weil die Komponente ein Objekt ist
+					this.count += cnt ; //innerhalb der Komponente müssen data-Eigenschaften und Methoden mit this angesprochen werden (im Template nicht)
 				},
 				over()
 				{

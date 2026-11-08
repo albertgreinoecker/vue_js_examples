@@ -3,7 +3,7 @@
       <table>
           <tr>
             <td><img alt="HTL logo" class="logo" src="../assets/htl-anichstrasse-logo.svg" width="125" height="125" /></td>
-            <td vertical-align="center">{{ msg }}</td>
+            <td style="vertical-align: middle">{{ msg }}</td>
       </tr>
       </table>
   </div>

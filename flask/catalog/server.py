@@ -1,7 +1,6 @@
 from flask import Flask, request,jsonify
 from sqlalchemy import Column, Integer, Text, Float, DateTime, create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker, declarative_base
 from sqlalchemy.sql.expression import func
 from flask_restful import Resource, Api
 from dataclasses import dataclass
@@ -15,12 +14,12 @@ engine = create_engine('sqlite:///catalog.db') #sqlite
 #engine = create_engine('mysql+pymysql://root:root@localhost/catalog') #mysql
 
 db_session = scoped_session(sessionmaker(autoflush=True, bind=engine))
-Base.query = db_session.query_property() #Dadurch hat jedes Base - Objekt (also auch ein GeoInfo) ein Attribut query für Abfragen
+Base.query = db_session.query_property() #Dadurch hat jedes Base - Objekt (also auch ein Catalog) ein Attribut query für Abfragen
 app = Flask(__name__) #Die Flask-Anwendung
-cors = CORS(app) # Ohne dieser Anweisung darf man von Webseiten aus nicht zugrfeifen
+cors = CORS(app) # Ohne diese Anweisung darf man von Webseiten aus nicht zugreifen
 api = Api(app) #Die Flask API
 
-@dataclass #Diese ermoeglicht das Schreiben als JSON mit jsonify
+@dataclass #Dieser Decorator ermöglicht das Schreiben als JSON mit jsonify
 class Catalog(Base):
     __tablename__ = 'card'  # Abbildung auf diese Tabelle
     id: int
@@ -39,8 +38,7 @@ class CatalogREST(Resource):
         data = request.get_json(force=True)['info']
         print(data)
         info = Catalog(id=data['id'], description=data['description'], thumb=data['thumb'])
-        db_session.add(info)
-        db_session.flush()
+        info = db_session.merge(info)  # merge: insert or update, add would fail for an existing id
         db_session.commit()
         return jsonify(info)
     def delete(self,id):
@@ -63,16 +61,17 @@ class CatalogREST(Resource):
         db_session.commit()
         return jsonify({'message': 'object with id %d modified' % id})
 
-    @app.route('/cat-search/<q>')
-    def cat_search(q):
-        infos = Catalog.query.filter(Catalog.description.contains(q)).all()
-        return  jsonify(infos)
+
+@app.route('/cat-search/<q>')
+def cat_search(q):
+    infos = Catalog.query.filter(Catalog.description.contains(q)).all()
+    return jsonify(infos)
 
 api.add_resource(CatalogREST, '/cat-item/<int:id>')
 
-@app.teardown_appcontext
+@app.teardown_appcontext  # wird nach jedem Request aufgerufen (Ende des App-Kontexts), nicht beim Beenden des Servers
 def shutdown_session(exception=None):
-    print("Shutdown Session")
+    print("Remove DB session")
     db_session.remove()
 
 def init_db():

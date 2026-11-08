@@ -21,7 +21,8 @@ export default {
     entry:
         {
           type : Object,
-          default: {id: 1, text: 'default'}
+          // Object/Array defaults must be factory functions, otherwise all instances share one object
+          default: () => ({id: 0, text: 'default'})
         }
   },
   emits: ['blogclick'],

@@ -1,14 +1,9 @@
-<script src="https://unpkg.com/vue@3"></script>
-<script src="https://unpkg.com/vue-select@latest"></script>
-<link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
-
 <html>
 <head>
 	<meta charset="utf-8">
+	<script src="https://unpkg.com/vue@3"></script>
 </head>
 <body>
-
-</body>
 	<div id="app">
 		Dieses Team ist ausgewählt: {{curr_team}}<br/>
 		<select v-model="curr_team" @change="filter_players">
@@ -21,7 +16,7 @@
 		</select>
 		<br/>
 		
-		Infos zum Spieler: <img :src="curr_player_obj.PhotoUrl" ></img>
+		Infos zum Spieler: <img :src="curr_player_obj.PhotoUrl">
 		<ul>
 			<li>ID: {{curr_player_obj.ID}}</li>
 			<li>Url: {{curr_player_obj.PhotoUrl}}</li>
@@ -39,11 +34,11 @@
 		<button @click="add(2)">add 2</button>
 		<button @click="remove(2)">remove 2</button>
 	</div>
-</html>
-     <script src="../data/teams_fifa22.js"></script>
-     <script src="../data/players_fifa22.js"></script>
+
+<script src="../data/teams_fifa22.js"></script>
+<script src="../data/players_fifa22.js"></script>
 <script>
-	const { createApp } = Vue
+const { createApp } = Vue
 
 createApp({
 	data() {
@@ -84,3 +79,5 @@ createApp({
 			}
 }).mount('#app')
 </script>
+</body>
+</html>

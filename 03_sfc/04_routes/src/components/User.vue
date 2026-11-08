@@ -1,6 +1,6 @@
 <template>
-    <h1>Home</h1>
-    Das ist die Homebase von:  {{name}}
+    <h1>User</h1>
+    Das ist die Homebase von: {{name}}
   </template>
   
   <script>

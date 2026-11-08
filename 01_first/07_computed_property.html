@@ -1,39 +1,37 @@
-<script src="https://unpkg.com/vue@3"></script>
 <html>
 <head>
-
+	<meta charset="utf-8">
+	<script src="https://unpkg.com/vue@3"></script>
 </head>
 <body>
-
-</body>
 	<div id="app">
-		<input type="text" v-model="word" placeholder="Name">
+		<input type="text" v-model="word" placeholder="Wort">
 		<button @click="add"> neu</button>
-		 <span v-for="w in words" >
-			 {{w}}<br>
-		 </span> <br/>
-		<!-- Wenn sich im Array word was geändert hat, wird die Berechnung neu ausgeführt -->
+		<span v-for="(w, i) in words" :key="i">
+			{{w}}<br>
+		</span> <br/>
+		<!-- Wenn sich im Array words etwas geändert hat, wird die Berechnung neu ausgeführt -->
 		Max Anzahl Zeichen: {{longestWordCount}}
-
 	</div>
-</html>
+
 <script>
 const { createApp } = Vue
 
 createApp({
 	data() {
 		return { //Deklaration der Variablen nicht vergessen!!
-			words : [''],
-			longest : 0,
+			word : '',
+			words : [],
 		}
 	},
 	computed:
 			{
 				longestWordCount()
 				{
-					//Gehe alle Elemente durch und speichere das längere Element als aktuelles Element
-					let max = this.words.reduce( (a, b) => (a.length > b.length ? a : b));
-					return max.length; //gib die Länge vom längesten String zurück
+					//Gehe alle Elemente durch und merke dir jeweils das längere Element
+					//'' als Startwert, damit reduce auch bei einem leeren Array funktioniert
+					let max = this.words.reduce( (a, b) => (a.length > b.length ? a : b), '');
+					return max.length; //gib die Länge vom längsten String zurück
 				}
 			},
 	methods:
@@ -45,3 +43,5 @@ createApp({
 			}
 }).mount('#app')
 </script>
+</body>
+</html>

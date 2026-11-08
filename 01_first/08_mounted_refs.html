@@ -1,15 +1,13 @@
-<script src="https://unpkg.com/vue@3"></script>
 <html>
 <head>
 	<meta charset="utf-8">
+	<script src="https://unpkg.com/vue@3"></script>
 </head>
 <body>
-
-</body>
 	<div id="app">
-		<p ref="p1" id="x">Es sind noch nicht alle Elemente fertig geladen</p>
+		<p ref="p1" id="x">Die Komponente ist noch nicht im DOM eingehängt</p>
 	</div>
-</html>
+
 <script>
 const { createApp } = Vue
 
@@ -18,12 +16,14 @@ createApp({
 		return {
 		}
 	},
-	mounted() //Wird aufgerufen, wenn die Seite (also der DOM vollständig geladen ist)
+	mounted() //Wird aufgerufen, sobald die Komponente ins DOM eingehängt wurde (ab jetzt sind die refs verfügbar)
 	{
-		this.$refs.p1.innerHTML = "Aber jetzt ist alles <b>vollständig</b> geladen";
+		this.$refs.p1.innerHTML = "Aber jetzt ist die Komponente <b>vollständig</b> eingehängt";
 		console.log(this.$refs.p1.parentElement);
 		console.log(this.$refs.p1.children);
 		console.log(this.$refs.p1.id);
 	}
 }).mount('#app')
 </script>
+</body>
+</html>

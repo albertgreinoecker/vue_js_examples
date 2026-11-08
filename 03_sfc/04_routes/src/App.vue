@@ -3,10 +3,10 @@
 
   <h2>Direkt als Button:</h2>
 
-  <button @click="$router.push('/home')">Home</button>
+  <button @click="$router.push('/')">Home</button>
   <button @click="$router.push('/about')">About</button>
   <button @click="$router.push('/contact')">Contact</button><br>
-  <button @click="$router.push('/user/' + user)">Contact</button><br>
+  <button @click="$router.push('/user/' + user)">User</button><br>
 
   <h2>Als Link:</h2>
 
@@ -25,12 +25,6 @@
       data() {
         return {
           user : "Hubert"
-        }
-      },
-      methods: {
-        about: function () {
-          console.log("about");
-          this.activeComp = 'about';
         }
       }
     }

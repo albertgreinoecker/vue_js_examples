@@ -4,10 +4,10 @@
       <CCAHeader :msg="msg" />
     <CCAHeader />
 
-    <h3> Events auslösen die sich auf die Hauptkomponente auswirken</h3>
+    <h3> Events auslösen, die sich auf die Hauptkomponente auswirken</h3>
   <BlogEntry/> <!-- Verwenden der Default-Values -->
-  <BlogEntry v-for="blog in blogs" :entry="blog" @blogclick="blog_click" />
-  <div v-if="curr_id != 0">Aktueller Blog {{curr_id}}</div>
+  <BlogEntry v-for="blog in blogs" :key="blog.id" :entry="blog" @blogclick="blog_click" />
+  <div v-if="curr_id !== null">Aktueller Blog {{curr_id}}</div>
 </template>
 
 <style scoped>
@@ -26,7 +26,7 @@
     return {
       msg: 'test',
       blogs : [{id: 1, text: 'entry 1'}, {id: 2, text: 'entry 2'}],
-      curr_id : 0
+      curr_id : null
 
     }
   },

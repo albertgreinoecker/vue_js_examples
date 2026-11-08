@@ -1,28 +1,26 @@
-<script src="https://unpkg.com/vue@3"></script>
 <html>
 <head>
-
+	<meta charset="utf-8">
+	<script src="https://unpkg.com/vue@3"></script>
 </head>
 <body>
-
-</body>
 	<div id="app">
 		<input type="text" v-model="user_name" placeholder="Name">
 
-		Abteilungen:
+		Abteilung:
 		<select v-model="department">
-    		<option v-for="d in departments" :value="d">{{d}}</option>
+			<option v-for="d in departments" :key="d" :value="d">{{d}}</option>
 		</select>
 		<button @click="add"> neu</button>
-		 <fieldset>
+		<fieldset>
 			<legend>Alle Benutzer:</legend>
-			 <span v-for="u in users" >
-				 <input type="checkbox" name="{{u.user_name}}" value="u">{{u.user_name}} ({{u.department}})</input><br>
-			 </span>
-    	</fieldset>
-
+			<span v-for="(u, i) in users" :key="i">
+				<!-- in Attributen funktioniert {{ }} nicht, dort wird v-bind (:) verwendet -->
+				<label><input type="checkbox" :name="u.user_name" :value="u.user_name">{{u.user_name}} ({{u.department}})</label><br>
+			</span>
+		</fieldset>
 	</div>
-</html>
+
 <script>
 const { createApp } = Vue
 
@@ -44,3 +42,5 @@ createApp({
 			}
 }).mount('#app')
 </script>
+</body>
+</html>

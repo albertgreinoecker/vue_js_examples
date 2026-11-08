@@ -4,7 +4,7 @@
   </div>
   <br/>
   <span class="hello"> Hallo {{ name }} </span><br/>
-  <button @click="count++">Anzahl der Clicks: {{ count }}</button>
+  <button @click="count++">Anzahl der Klicks: {{ count }}</button>
 </template>
 
 <style>

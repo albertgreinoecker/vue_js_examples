@@ -4,3 +4,5 @@ Flask-Cors
 Flask-RESTful
 PyMySQL
 SQLAlchemy
+pandas
+simplejson
