@@ -73,6 +73,7 @@ createApp({
 					console.log("CURR_PLAYER:" +  JSON.stringify(this.curr_player_obj));
 				}, add(which)
 				{
+					//this.team1_players.push((this.curr_player));
 					this["team" + which + "_players"].push((this.curr_player));
 				}, remove(which)
 				{
